@@ -1,14 +1,35 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/views/home.vue";
+import ShareFeedBack from "@/views/share-feedback.vue";
+import MyFeedBack from "@/views/my-feedback.vue";
+import TeamFeedBack from "@/views/team-feedback.vue";
 import Login from "@/views/login.vue";
+import Dashboard from "@/layouts/dashboard.vue";
+import NotFound from "@/views/NotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home,
+      redirect: "/share-feedback",
+      component: Dashboard,
+      children: [
+        {
+          path: "/share-feedback",
+          name: "share-feedback",
+          component: ShareFeedBack,
+        },
+        {
+          path: "/my-feedback",
+          name: "my-feedback",
+          component: MyFeedBack,
+        },
+        {
+          path: "/team-feedback",
+          name: "team-feedback",
+          component: TeamFeedBack,
+        },
+      ],
     },
     { path: "/login", name: "login-page", component: Login },
     // {
@@ -19,6 +40,7 @@ const router = createRouter({
     //   // which is lazy-loaded when the route is visited.
     //   component: () => import('../views/AboutView.vue')
     // }
+    { path: "/:pathMatch(.*)*", name: "not-found", component: NotFound },
   ],
 });
 

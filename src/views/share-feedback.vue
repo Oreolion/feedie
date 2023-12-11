@@ -1,6 +1,4 @@
 <template>
-  <navbar />
-
   <div class="max-w-4xl mx-auto my-10">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-semibold">Share Feedback</h1>
@@ -56,12 +54,9 @@
 
 <script>
 import axios from "axios";
-import navbar from "@/components/navbar.vue";
+
 export default {
   name: "app",
-  components: {
-    navbar,
-  },
   data() {
     return {
       isDetail: false,
