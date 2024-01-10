@@ -10,22 +10,20 @@
           to="/share-feedback"
           class="h-full flex items-center border-b-[3px] border-[#F2F3F4]"
         >
-          <navLinks :feedback="shareFeedback"/>
+          <navLinks :feedback="shareFeedback" />
         </router-link>
         <router-link
           to="/my-feedback"
           class="h-full flex items-center border-b-[3px] border-[#F2F3F4]"
-          >
-          <navLinks :feedback="myFeedback"/>
-          </router-link
         >
+          <navLinks :feedback="myFeedback" />
+        </router-link>
         <router-link
           to="/team-feedback"
           class="h-full flex items-center border-b-[3px] border-[#F2F3F4]"
-          >
-          <navLinks :feedback="teamFeedback"/>
-          </router-link
         >
+          <navLinks :feedback="teamFeedback" />
+        </router-link>
       </div>
     </div>
 
@@ -74,23 +72,22 @@
   </nav>
 </template>
 
-<script setup>
- import navLinks from "./navLinks.vue";
- import { ref } from "vue";
+<script setup lang="ts">
+import navLinks from "./navLinks.vue";
+import { ref } from "vue";
 
- let shareFeedback = ref({
-   text: 'Share Feedback',
-   notification: 2
- })
- let myFeedback = ref({
-   text: 'My Feedback',
-   notification: 8
- })
- let teamFeedback = ref({
-   text: 'Team Feedback',
-   notification: 0 
- })
- 
+let shareFeedback = ref({
+  text: "Share Feedback",
+  notification: 2,
+});
+let myFeedback = ref({
+  text: "My Feedback",
+  notification: 8,
+});
+let teamFeedback = ref({
+  text: "Team Feedback",
+  notification: 0,
+});
 </script>
 
 <style scoped>

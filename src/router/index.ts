@@ -20,6 +20,11 @@ const router = createRouter({
           component: ShareFeedBack,
         },
         {
+          path: "/share-feedback/:id",
+          name: "user-feedback",
+          component: () => import("@/views/user-feedback.vue"),
+        },
+        {
           path: "/my-feedback",
           name: "my-feedback",
           component: MyFeedBack,

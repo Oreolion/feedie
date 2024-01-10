@@ -17,7 +17,7 @@
     <div class="wrapper" v-if="users.length">
       <div
         v-for="(user, index) in users"
-        :key="user.id"
+        :key="user.login.uuid"
         class="flex justify-between items-center py-3 hover:bg-[#d5b0f21a] cursor-pointer"
         :class="{ 'border-t border-[#D9DCDE]': index !== 0 }"
       >
@@ -37,8 +37,8 @@
 
         <div class="px-5">
           <button
-            class="border border-[#ACB1B6] font-semibold rounded hover:bg-[#D9DCDE] w-[198px] h-[48px] focus:text-white focus:bg-[#AB61E5] focus:border-none"
-            @click="handleDetail(index)"
+            class="border border-[rgb(172,177,182)] font-semibold rounded hover:bg-[#D9DCDE] w-[198px] h-[48px] focus:text-white focus:bg-[#AB61E5] focus:border-none"
+            @click="handleDetail(user)"
           >
             {{ !user.isFilledOut ? " Fill Out " : "View Submission" }}
           </button>
@@ -52,38 +52,38 @@
   </div>
 </template>
 
-<script>
-import axios from "axios";
+<script lang="ts">
+import { getRandomUsers, type IRandomUser } from "@/services";
 
 export default {
-  name: "app",
+  name: "ShareFeedback",
   data() {
     return {
       isDetail: false,
-      users: [],
+      users: [] as IRandomUser[],
     };
   },
   methods: {
-    handleDetail(index) {
-      this.users = this.users.map((user, i) => {
-        if (i === index) {
-          return { ...user, isFilledOut: !user.isFilledOut };
-        }
-
-        return user;
+    handleDetail(user: IRandomUser) {
+      this.$router.push({
+        name: "user-feedback",
+        params: { id: user.login.uuid },
       });
+    },
+    async fetchRandomUser() {
+      getRandomUsers()
+        .then((response) => {
+          console.log(response.data.results);
+          this.users = response.data.results.map((item) => ({
+            ...item,
+            isFilledOut: false,
+          }));
+        })
+        .catch((error) => console.log(error));
     },
   },
   mounted() {
-    axios
-      .get("https://randomuser.me/api/?results=5")
-      .then((response) => {
-        this.users = response.data.results.map((item) => ({
-          ...item,
-          isFilledOut: false,
-        }));
-      })
-      .catch((error) => console.log(error.message));
+    this.fetchRandomUser();
   },
 };
 </script>
