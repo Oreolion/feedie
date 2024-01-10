@@ -1,14 +1,7 @@
-<!-- <template>
-  <div>NotFound....</div>
-</template>
-
-<script setup></script>
-
-<style lang="scss" scoped></style> -->
-
-
 <template>
-  <div class="flex items-center justify-center bg-[url('../assets/images/login-bg.png')] h-screen bg-cover">
+  <div
+    class="flex items-center justify-center bg-[url('../assets/images/login-bg.png')] h-screen bg-cover"
+  >
     <div class="text-center">
       <img
         src="../assets/images/error.png"

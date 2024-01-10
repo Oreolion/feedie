@@ -33,11 +33,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import HLogo from "@/components/svg-components/h-logo.vue";
 import { ref } from "vue";
 
-const loginAs = ref("");
+const loginAs = ref<string>("");
 </script>
 
 <style scoped></style>
