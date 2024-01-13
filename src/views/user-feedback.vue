@@ -43,7 +43,10 @@
 
       <text-area v-if="questions[currentQuestion].type === 'long-text'" />
 
-      <option-scale v-if="questions[currentQuestion].type === 'option-scale'" />
+      <option-scale
+        v-if="questions[currentQuestion].type === 'option-scale'"
+        @selected="handleSelected($event)"
+      />
 
       <div class="flex justify-between mt-8">
         <button
@@ -106,6 +109,8 @@ import OptionScale from "@/components/option-scale.vue";
 
 const currentQuestion = ref(0);
 
+const optionScaleValue = ref(0);
+
 const questions = [
   {
     question: "How well did I display courage?",
@@ -126,8 +131,13 @@ I and others can count on your courage to help the team do what is right. `,
 ];
 
 const getProgress = computed(() => {
-  return (currentQuestion.value + 1 / questions.length) * 100;
+  return ((currentQuestion.value + 1) / questions.length) * 100;
 });
+
+const handleSelected = (event: number) => {
+  console.log(event);
+  optionScaleValue.value = event;
+};
 </script>
 
 <style scoped>
