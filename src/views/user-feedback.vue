@@ -38,13 +38,20 @@
     <div class="wrapper px-4 py-5">
       <multiple-options
         :options="questions[currentQuestion].options"
+        :value="answers[currentQuestion] ?? ''"
+        @selected="handleSelected($event)"
         v-if="questions[currentQuestion].type === 'multi-choice'"
       />
 
-      <text-area v-if="questions[currentQuestion].type === 'long-text'" />
+      <text-area
+        v-if="questions[currentQuestion].type === 'long-text'"
+        :value="answers[currentQuestion] ?? ''"
+        @selected="handleSelected($event)"
+      />
 
       <option-scale
         v-if="questions[currentQuestion].type === 'option-scale'"
+        :value="answers[currentQuestion] ?? 0"
         @selected="handleSelected($event)"
       />
 
@@ -112,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 
 import MultipleOptions from "@/components/multiple-options.vue";
 import TextArea from "@/components/text-area.vue";
@@ -128,10 +135,11 @@ const currentQuestion = ref(0);
 
 const optionScaleValue = ref(0);
 
-const questions = [
+const questions = reactive([
   {
     question: "How well did I display courage?",
     type: "multi-choice",
+    answer: "",
     options: [
       `Please Improve
 You may have done one or the following: Maybe you were mostly quiet in meetings and when you had something on your mind, you brought it to the team afterward. Or, you had feedback that would be valuable to go, but you found it too difficult. Or, you had an opportunity to grow by doing something uncomfortable but you didn’t. `,
@@ -144,20 +152,25 @@ I and others can count on your courage to help the team do what is right. `,
   {
     question: "How well did you understand the class today?",
     type: "option-scale",
+    answer: "",
   },
   {
     question: "Give us your personal feed back concerning the class",
     type: "long-text",
+    answer: "",
   },
-];
+]);
+
+const answers = ref<{ [x: number]: any }>({});
 
 const getProgress = computed(() => {
   return ((currentQuestion.value + 1) / questions.length) * 100;
 });
 
-const handleSelected = (event: number) => {
+const handleSelected = (event: string) => {
   console.log(event);
-  optionScaleValue.value = event;
+  answers.value[currentQuestion.value] = event;
+  console.log("------->", answers.value);
 };
 
 const handleSubmit = () => {
