@@ -54,6 +54,8 @@
 
 <script lang="ts">
 import { getRandomUsers, type IRandomUser } from "@/services";
+import { useFeedbackStore } from "@/stores/feedback";
+import { useRouter } from "vue-router";
 
 export default {
   name: "ShareFeedback",
@@ -63,13 +65,23 @@ export default {
       users: [] as IRandomUser[],
     };
   },
-  methods: {
-    handleDetail(user: IRandomUser) {
-      this.$router.push({
+  setup() {
+    const feedbackStore = useFeedbackStore();
+    const router = useRouter();
+
+    const handleDetail = (user: IRandomUser) => {
+      router.push({
         name: "user-feedback",
-        params: { id: user.login.uuid },
+        // params: { id: user.login.uuid },
+        params: { id: `${user.name.first} ${user.name.last}` },
       });
-    },
+
+      feedbackStore.selectedFeedbackUser = `${user.name.first} ${user.name.last}`;
+    };
+
+    return { handleDetail };
+  },
+  methods: {
     async fetchRandomUser() {
       getRandomUsers()
         .then((response) => {

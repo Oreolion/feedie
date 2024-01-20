@@ -28,7 +28,7 @@
         </h2>
 
         <p class="text-xs tracking-[1.8px] uppercase font-bold text-[#ACB1B6]">
-          share your feedback for christopher Johnson
+          share your feedback for {{ route.params.id }}
         </p>
       </div>
 
@@ -62,24 +62,35 @@
           Previous
         </button>
 
-        <button
-          class="w-[150px] h-[48px] border border-[#ACB1B6] rounded-md font-semibold"
-        >
-          Skip
-        </button>
+        <div v-if="currentQuestion !== questions.length - 1">
+          <button
+            class="w-[150px] h-[48px] border border-[#ACB1B6] rounded-md font-semibold"
+          >
+            Skip
+          </button>
 
-        <button
-          class="w-[150px] h-[48px] rounded-md font-semibold text-white"
-          :class="[
-            currentQuestion === questions.length - 1
-              ? 'bg-[#ACB1B6] cursor-not-allowed'
-              : 'bg-[#AB61E5]',
-          ]"
-          :disabled="currentQuestion === questions.length - 1"
-          @click="currentQuestion++"
-        >
-          Next
-        </button>
+          <button
+            class="w-[150px] h-[48px] rounded-md font-semibold text-white"
+            :class="[
+              currentQuestion === questions.length - 1
+                ? 'bg-[#ACB1B6] cursor-not-allowed'
+                : 'bg-[#AB61E5]',
+            ]"
+            :disabled="currentQuestion === questions.length - 1"
+            @click="currentQuestion++"
+          >
+            Next
+          </button>
+        </div>
+
+        <div v-else>
+          <button
+            class="w-[150px] h-[48px] rounded-md font-semibold text-white bg-[#AB61E5]"
+            @click="handleSubmit"
+          >
+            Submit
+          </button>
+        </div>
       </div>
 
       <div class="bg-[#F2F3F4] h-1 rounded-sm mt-8">
@@ -93,8 +104,8 @@
         <p class="uppercase text-xs font-bold tracking-[1.8px]">
           questions completed
         </p>
+
         <p>{{ currentQuestion + 1 }}/{{ questions.length }}</p>
-        {{}}
       </div>
     </div>
   </div>
@@ -106,6 +117,12 @@ import { ref, computed } from "vue";
 import MultipleOptions from "@/components/multiple-options.vue";
 import TextArea from "@/components/text-area.vue";
 import OptionScale from "@/components/option-scale.vue";
+import { useFeedbackStore } from "@/stores/feedback";
+
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const feedbackStore = useFeedbackStore();
 
 const currentQuestion = ref(0);
 
@@ -128,6 +145,10 @@ I and others can count on your courage to help the team do what is right. `,
     question: "How well did you understand the class today?",
     type: "option-scale",
   },
+  {
+    question: "Give us your personal feed back concerning the class",
+    type: "long-text",
+  },
 ];
 
 const getProgress = computed(() => {
@@ -137,6 +158,10 @@ const getProgress = computed(() => {
 const handleSelected = (event: number) => {
   console.log(event);
   optionScaleValue.value = event;
+};
+
+const handleSubmit = () => {
+  console.log("I am submitting...");
 };
 </script>
 
