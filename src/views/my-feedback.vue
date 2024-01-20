@@ -1,7 +1,10 @@
 <template>
-  <div>this is my feedback page</div>
+    <no-feedback />
 </template>
 
-<script setup></script>
+<script setup>
+import NoFeedback from "@/components/no-feedback.vue";
+
+</script>
 
 <style lang="scss" scoped></style>
