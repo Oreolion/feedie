@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-4xl mx-auto my-10">
-    <div class="flex items-center justify-between mb-4">
+    <div class="header-box flex items-center justify-between mb-4">
       <h1 class="text-2xl font-semibold">Share Feedback</h1>
 
       <label class="flex flex-col">
@@ -102,5 +102,12 @@ export default {
 <style scoped>
 .wrapper {
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+
+}
+
+@media (max-width: 768px) {
+    .header-box {
+        padding: 0 1rem;
+    }
 }
 </style>

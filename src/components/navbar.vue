@@ -1,11 +1,13 @@
 <template>
-  <nav class="flex justify-between items-center bg-[#F2F3F4] h-[75px] px-9">
+  <nav
+    class="flex justify-between items-center bg-[#F2F3F4] h-[75px] px-9 relative"
+  >
     <div class="flex items-center h-full gap-24 px-10">
       <div>
         <div class="font-extrabold text-2xl">Honesto</div>
       </div>
 
-      <div class="flex gap-20 text-base h-full">
+      <div class="gap-20 text-base h-full hidden md:flex">
         <router-link
           to="/share-feedback"
           class="h-full flex items-center border-b-[3px] border-[#F2F3F4]"
@@ -25,6 +27,32 @@
           <navLinks :feedback="teamFeedback" />
         </router-link>
       </div>
+    </div>
+
+    <div class="cursor-pointer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 448 512"
+        class="h-8 ml-[8rem] md:hidden"
+        @click="toggleMenu"
+        v-if="!toggle"
+      >
+        <path
+          d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"
+        />
+      </svg>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 384 512"
+        class="h-8 ml-[8rem] md:hidden"
+        v-else="toggle"
+        @click="toggleMenu"
+      >
+        <path
+          d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"
+        />
+      </svg>
     </div>
 
     <div
@@ -70,6 +98,32 @@
       </div>
     </div>
   </nav>
+  <!-- mobile menu list -->
+  <div
+    v-if="toggle"
+    class=" md:hidden items-center h-[89%] gap-10 px-10 fixed right-[-10px] bottom-0 w-[45%] bg-[#F2F3F4]"
+  >
+    <div class="flex gap-5 text-base h-full flex-col">
+      <router-link
+        to="/share-feedback"
+        class="h-[5rem] flex items-center border-b-[3px] border-[#ab61e5]"
+      >
+        <navLinks :feedback="shareFeedback" />
+      </router-link>
+      <router-link
+        to="/my-feedback"
+        class="h-[5rem] flex items-center border-b-[3px] border-[#ab61e5]"
+      >
+        <navLinks :feedback="myFeedback" />
+      </router-link>
+      <router-link
+        to="/team-feedback"
+        class="h-[5rem] flex items-center border-b-[3px] border-[#ab61e5]"
+      >
+        <navLinks :feedback="teamFeedback" />
+      </router-link>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -88,10 +142,18 @@ let teamFeedback = ref({
   text: "Team Feedback",
   notification: 0,
 });
+
+let toggle = ref(false);
+
+let toggleMenu = () => {
+  toggle.value = !toggle.value;
+};
 </script>
 
 <style scoped>
 nav a.router-link-exact-active {
   border-bottom: 3px solid #ab61e5;
 }
+
+
 </style>
