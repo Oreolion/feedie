@@ -46,8 +46,8 @@
       </div>
     </div>
 
-    <div v-else class="text-center my-[20%]">
-      <h1 class="text-2xl text-slate-400">fetching data.........</h1>
+    <div v-else>
+      <LoadingMockup />
     </div>
   </div>
 </template>
@@ -56,47 +56,46 @@
 import { getRandomUsers, type IRandomUser } from "@/services";
 import { useFeedbackStore } from "@/stores/feedback";
 import { useRouter } from "vue-router";
+import LoadingMockup from "../components/LoadingMockup.vue";
 
 export default {
-  name: "ShareFeedback",
-  data() {
-    return {
-      isDetail: false,
-      users: [] as IRandomUser[],
-    };
-  },
-  setup() {
-    const feedbackStore = useFeedbackStore();
-    const router = useRouter();
-
-    const handleDetail = (user: IRandomUser) => {
-      router.push({
-        name: "user-feedback",
-        // params: { id: user.login.uuid },
-        params: { id: `${user.name.first} ${user.name.last}` },
-      });
-
-      feedbackStore.selectedFeedbackUser = `${user.name.first} ${user.name.last}`;
-    };
-
-    return { handleDetail };
-  },
-  methods: {
-    async fetchRandomUser() {
-      getRandomUsers()
-        .then((response) => {
-          console.log(response.data.results);
-          this.users = response.data.results.map((item) => ({
-            ...item,
-            isFilledOut: false,
-          }));
-        })
-        .catch((error) => console.log(error));
+    name: "ShareFeedback",
+    data() {
+        return {
+            isDetail: false,
+            users: [] as IRandomUser[],
+        };
     },
-  },
-  mounted() {
-    this.fetchRandomUser();
-  },
+    setup() {
+        const feedbackStore = useFeedbackStore();
+        const router = useRouter();
+        const handleDetail = (user: IRandomUser) => {
+            router.push({
+                name: "user-feedback",
+                // params: { id: user.login.uuid },
+                params: { id: `${user.name.first} ${user.name.last}` },
+            });
+            feedbackStore.selectedFeedbackUser = `${user.name.first} ${user.name.last}`;
+        };
+        return { handleDetail };
+    },
+    methods: {
+        async fetchRandomUser() {
+            getRandomUsers()
+                .then((response) => {
+                console.log(response.data.results);
+                this.users = response.data.results.map((item) => ({
+                    ...item,
+                    isFilledOut: false,
+                }));
+            })
+                .catch((error) => console.log(error));
+        },
+    },
+    mounted() {
+        this.fetchRandomUser();
+    },
+    components: { LoadingMockup }
 };
 </script>
 
