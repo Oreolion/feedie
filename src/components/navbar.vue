@@ -92,16 +92,19 @@
 
       <div>
         <div class="text-[#031323]">Jane Smith</div>
-        <h2 class="text-xs font-bold text-[#59636E] uppercase tracking-[1.8px]">
+        <button
+          class="text-xs font-bold text-[#59636E] uppercase tracking-[1.8px]"
+          @click="handleLogout"
+        >
           LogOut
-        </h2>
+        </button>
       </div>
     </div>
   </nav>
   <!-- mobile menu list -->
   <div
     v-if="toggle"
-    class=" md:hidden items-center h-[89%] gap-10 px-10 fixed right-[-10px] bottom-0 w-[45%] bg-[#F2F3F4]"
+    class="md:hidden items-center h-[89%] gap-10 px-10 fixed right-[-10px] bottom-0 w-[45%] bg-[#F2F3F4]"
   >
     <div class="flex gap-5 text-base h-full flex-col">
       <router-link
@@ -127,8 +130,12 @@
 </template>
 
 <script setup lang="ts">
-import navLinks from "./navLinks.vue";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { signOut, getAuth } from "firebase/auth";
+import navLinks from "./navLinks.vue";
+
+const router = useRouter();
 
 let shareFeedback = ref({
   text: "Share Feedback",
@@ -148,12 +155,20 @@ let toggle = ref(false);
 let toggleMenu = () => {
   toggle.value = !toggle.value;
 };
+
+const handleLogout = async () => {
+  try {
+    await signOut(getAuth());
+    localStorage.clear();
+    router.push("/login");
+  } catch (error) {
+    console.log(error);
+  }
+};
 </script>
 
 <style scoped>
 nav a.router-link-exact-active {
   border-bottom: 3px solid #ab61e5;
 }
-
-
 </style>
