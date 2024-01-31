@@ -15,8 +15,12 @@
 
           <input
             class="border border-solid w-full font-normal px-3 h-[43px]"
-            v-model="user.email"
+            v-model="v$.email.$model"
           />
+
+          <small class="text-red-500" v-if="v$.email.$errors.length">{{
+            v$.email.$errors[0].$message
+          }}</small>
         </label>
 
         <label class="font-semibold flex flex-col gap-y-1">
@@ -24,8 +28,13 @@
 
           <input
             class="border border-solid w-full font-normal px-3 h-[43px]"
-            v-model="user.password"
+            type="password"
+            v-model="v$.password.$model"
           />
+
+          <small class="text-red-500" v-if="v$.password.$errors.length">{{
+            v$.password.$errors[0].$message
+          }}</small>
         </label>
 
         <label class="font-semibold flex flex-col gap-y-1">
@@ -33,45 +42,92 @@
 
           <input
             class="border border-solid w-full font-normal px-3 h-[43px]"
-            v-model="confirmPassword"
+            type="password"
+            v-model="v$.confirmPassword.$model"
           />
+
+          <small
+            class="text-red-500"
+            v-if="v$.confirmPassword.$errors.length"
+            >{{ v$.confirmPassword.$errors[0].$message }}</small
+          >
         </label>
 
         <button
           class="bg-[#AB61E5] w-full text-white font-semibold py-3 rounded"
+          :class="{ 'cursor-not-allowed': isSubmitting }"
+          :disabled="isSubmitting"
           type="button"
           @click="handleSignup"
         >
-          Signup
+          {{ isSubmitting ? "Signing up..." : "Signup" }}
         </button>
+        <small
+          >I already have an account
+          <router-link to="/login" class="font-semibold text-[#AB61E5]"
+            >Login</router-link
+          ></small
+        >
       </div>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { reactive, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import { auth } from "@/utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { toast } from "vue3-toastify";
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength, sameAs } from "@vuelidate/validators";
 import HLogo from "@/components/svg-components/h-logo.vue";
-import { ref } from "vue";
 
-const loginAs = ref<string>("");
-const user = ref({
+const router = useRouter();
+
+const user = reactive({
   email: "",
   password: "",
+  confirmPassword: "",
 });
-const confirmPassword = ref("");
+
+const isSubmitting = ref(false);
+
+const userRules = {
+  email: { required, email },
+  password: { required, minLength: minLength(8) },
+  confirmPassword: {
+    required,
+    minLength: minLength(8),
+    sameAs: sameAs(computed(() => user.password)),
+  },
+};
+
+const v$ = useVuelidate(userRules, user);
 
 const handleSignup = async () => {
+  const isValid = await v$.value.$validate();
+  if (!isValid) return;
+
   try {
+    isSubmitting.value = true;
     const response = await createUserWithEmailAndPassword(
       auth,
-      user.value.email,
-      user.value.password
+      user.email,
+      user.password
     );
     console.log("-------->", response);
-  } catch (error) {
+
+    if (response.user) {
+      localStorage.setItem("isLoggedIn", "true");
+
+      router.push("/share-feedback");
+    }
+  } catch (error: any) {
     console.log(error);
+    toast.error(error.message);
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>

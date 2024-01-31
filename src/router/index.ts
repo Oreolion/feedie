@@ -7,6 +7,7 @@ import Login from "@/views/login.vue";
 import Signup from "@/views/signup.vue";
 import Dashboard from "@/layouts/dashboard.vue";
 import NotFound from "@/views/NotFound.vue";
+import Profile from "@/views/profile.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,12 @@ const router = createRouter({
           path: "/team-feedback",
           name: "team-feedback",
           component: TeamFeedBack,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "/profile",
+          name: "user-profile",
+          component: Profile,
           meta: { requiresAuth: true },
         },
       ],
