@@ -43,15 +43,22 @@
         >
           Login
         </button>
+
+        <small
+          >Don't have an account?
+          <router-link to="/signup" class="font-semibold text-[#AB61E5]"
+            >Signup</router-link
+          ></small
+        >
       </div>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
 import { useRouter } from "vue-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength } from "@vuelidate/validators";
@@ -67,6 +74,11 @@ const userRules = {
   email: { required, email },
   password: { required, minLength: minLength(8) },
 };
+
+updateProfile(auth.currentUser as any, {
+  displayName: "",
+  photoURL: "",
+});
 
 const v$ = useVuelidate(userRules, user);
 
