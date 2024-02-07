@@ -11,6 +11,32 @@
 
       <div class="px-16 space-y-5">
         <label class="font-semibold flex flex-col gap-y-1">
+          First Name:
+
+          <input
+            class="border border-solid w-full font-normal px-3 h-[43px]"
+            v-model="v$.firstName.$model"
+          />
+
+          <small class="text-red-500" v-if="v$.firstName.$errors.length">{{
+            v$.firstName.$errors[0].$message
+          }}</small>
+        </label>
+
+        <label class="font-semibold flex flex-col gap-y-1">
+          Last Name:
+
+          <input
+            class="border border-solid w-full font-normal px-3 h-[43px]"
+            v-model="v$.lastName.$model"
+          />
+
+          <small class="text-red-500" v-if="v$.lastName.$errors.length">{{
+            v$.lastName.$errors[0].$message
+          }}</small>
+        </label>
+
+        <label class="font-semibold flex flex-col gap-y-1">
           Email:
 
           <input
@@ -82,10 +108,13 @@ import { toast } from "vue3-toastify";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, sameAs } from "@vuelidate/validators";
 import HLogo from "@/components/svg-components/h-logo.vue";
+import { createUser } from "@/services";
 
 const router = useRouter();
 
 const user = reactive({
+  firstName: "",
+  lastName: "",
   email: "",
   password: "",
   confirmPassword: "",
@@ -94,6 +123,8 @@ const user = reactive({
 const isSubmitting = ref(false);
 
 const userRules = {
+  firstName: { required },
+  lastName: { required },
   email: { required, email },
   password: { required, minLength: minLength(8) },
   confirmPassword: {
@@ -111,15 +142,23 @@ const handleSignup = async () => {
 
   try {
     isSubmitting.value = true;
+
     const response = await createUserWithEmailAndPassword(
       auth,
       user.email,
       user.password
     );
+
     console.log("-------->", response);
 
     if (response.user) {
       localStorage.setItem("isLoggedIn", "true");
+
+      await createUser({
+        userId: response.user.uid,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      });
 
       router.push("/share-feedback");
     }

@@ -58,7 +58,10 @@
     <div
       class="flex items-center gap-2 font-light border-l border-[#D9DCDE] h-full pl-4"
     >
-      <div class="h-[58px] w-[58px]">
+      <div
+        class="h-[58px] w-[58px] cursor-pointer"
+        @click="$router.push('/profile')"
+      >
         <svg
           width="58"
           height="58"

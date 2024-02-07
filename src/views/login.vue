@@ -28,6 +28,7 @@
 
           <input
             class="border border-solid w-full font-normal px-3 h-[43px]"
+            type="password"
             v-model="v$.password.$model"
           />
 
