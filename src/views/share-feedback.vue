@@ -14,24 +14,20 @@
       </label>
     </div>
 
-    <div class="wrapper" v-if="users.length">
+    <div class="wrapper" v-if="!isLoading">
       <div
         v-for="(user, index) in users"
-        :key="user.login.uuid"
+        :key="index"
         class="flex justify-between items-center py-3 hover:bg-[#d5b0f21a] cursor-pointer"
         :class="{ 'border-t border-[#D9DCDE]': index !== 0 }"
       >
         <div class="flex items-center gap-5 px-5">
           <div class="w-[58px] h-[58px] rounded-full">
-            <img
-              :src="user.picture.medium"
-              alt=""
-              class="rounded-full w-full h-full"
-            />
+            <img :src="''" alt="" class="rounded-full w-full h-full" />
           </div>
 
           <div class="text-xl font-semibold text-[#59636E]">
-            {{ user.name.first }}
+            {{ user.firstName }} {{ user.lastName }}
           </div>
         </div>
 
@@ -40,7 +36,7 @@
             class="border border-[rgb(172,177,182)] font-semibold rounded hover:bg-[#D9DCDE] w-[198px] h-[48px] focus:text-white focus:bg-[#AB61E5] focus:border-none"
             @click="handleDetail(user)"
           >
-            {{ !user.isFilledOut ? " Fill Out " : "View Submission" }}
+            {{ true ? " Fill Out " : "View Submission" }}
           </button>
         </div>
       </div>
@@ -52,62 +48,50 @@
   </div>
 </template>
 
-<script lang="ts">
-import { getRandomUsers, type IRandomUser } from "@/services";
-import { useFeedbackStore } from "@/stores/feedback";
+<script lang="ts" setup>
+import { ref } from "vue";
+import { getRandomUsers, type IRandomUser, getUsers } from "@/services";
+import { getAuth } from "firebase/auth";
 import { useRouter } from "vue-router";
 import LoadingMockup from "../components/LoadingMockup.vue";
 
-export default {
-    name: "ShareFeedback",
-    data() {
-        return {
-            isDetail: false,
-            users: [] as IRandomUser[],
-        };
-    },
-    setup() {
-        const feedbackStore = useFeedbackStore();
-        const router = useRouter();
-        const handleDetail = (user: IRandomUser) => {
-            router.push({
-                name: "user-feedback",
-                // params: { id: user.login.uuid },
-                params: { id: `${user.name.first} ${user.name.last}` },
-            });
-            feedbackStore.selectedFeedbackUser = `${user.name.first} ${user.name.last}`;
-        };
-        return { handleDetail };
-    },
-    methods: {
-        async fetchRandomUser() {
-            getRandomUsers()
-                .then((response) => {
-                console.log(response.data.results);
-                this.users = response.data.results.map((item) => ({
-                    ...item,
-                    isFilledOut: false,
-                }));
-            })
-                .catch((error) => console.log(error));
-        },
-    },
-    mounted() {
-        this.fetchRandomUser();
-    },
-    components: { LoadingMockup }
+const router = useRouter();
+
+const users = ref<any>([]);
+const isLoading = ref(true);
+
+const handleDetail = (user: IRandomUser) => {
+  router.push({
+    name: "user-feedback",
+    // params: { id: user.login.uuid },
+    params: { id: `${user.name.first} ${user.name.last}` },
+  });
 };
+
+const fetchUsers = async () => {
+  try {
+    const usersResponse = await getUsers();
+    console.log({ users });
+
+    users.value = usersResponse;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+fetchUsers();
 </script>
 
 <style scoped>
 .wrapper {
   box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
-
 }
 
 @media (max-width: 768px) {
-    .header-box {
-        padding: 0 1rem;
-    }
+  .header-box {
+    padding: 0 1rem;
+  }
 }
 </style>

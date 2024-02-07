@@ -120,6 +120,7 @@
 
 <script setup lang="ts">
 import { ref, computed, reactive } from "vue";
+import { createFeedBack } from "@/services/index";
 
 import MultipleOptions from "@/components/multiple-options.vue";
 import TextArea from "@/components/text-area.vue";
@@ -175,6 +176,12 @@ const handleSelected = (event: string) => {
 
 const handleSubmit = () => {
   console.log("I am submitting...");
+
+  createFeedBack({
+    userId: route.params.id as string,
+    id: route.params.id as string,
+    answers: JSON.stringify(answers),
+  });
 };
 </script>
 

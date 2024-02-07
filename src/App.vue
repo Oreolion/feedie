@@ -2,7 +2,7 @@
   <router-view />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useUserStore } from "@/stores/user";
 
@@ -18,6 +18,8 @@ onAuthStateChanged(auth, (user) => {
     localStorage.setItem("isLoggedIn", true);
 
     console.log("----=====>", user);
+
+    userStore.user = { isLoggedIn: true, ...user };
 
     // login page --> dashboard (share-feedback)
 

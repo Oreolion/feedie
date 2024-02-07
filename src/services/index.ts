@@ -1,4 +1,6 @@
 import axios, { type AxiosResponse } from "axios";
+import { collection, getDocs, setDoc, doc, addDoc } from "firebase/firestore";
+import { db } from "@/utils/firebase";
 
 export interface IRandomUser {
   isFilledOut?: boolean;
@@ -66,4 +68,57 @@ export const getRandomUsers = () => {
   const endpoint = "https://randomuser.me/api/?results=5";
 
   return axios.get(endpoint) as Promise<AxiosResponse<IRandomUserResponse>>;
+};
+
+export const getAllFeedBacks = async () => {
+  const querySnapshot = await getDocs(collection(db, "feedback"));
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+  });
+};
+
+export const createFeedBack = async (data: {
+  userId: string;
+  id: string;
+  answers: string;
+}) => {
+  try {
+    await setDoc(doc(db, "feedback"), data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// export const createUser = async (data: { userId: string }) => {
+//   try {
+//     await addDoc(collection(db, "users"), data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+export const createUser = async (data: {
+  userId: string;
+  firstName: string;
+  lastName: string;
+}) => {
+  try {
+    await setDoc(doc(db, "users", data.userId), { ...data, feedbacks: {} });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUsers = async () => {
+  try {
+    const users: any[] = [];
+    const querySnapshot = await getDocs(collection(db, "users"));
+    console.log({ querySnapshot });
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      users.push(doc.data());
+    });
+
+    return users;
+  } catch (error) {}
 };
